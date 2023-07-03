@@ -7,6 +7,8 @@ import com.driver.model.Passenger;
 import com.driver.repository.AirportRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
 @Service
 public class AirportService {
     private AirportRepository airportRepository = new AirportRepository();
@@ -50,5 +52,13 @@ public class AirportService {
 
     public int calculateFair(Integer flightId) {
         return airportRepository.getFair(flightId);
+    }
+
+    public int getTotalNumberOfPeopleOnAirport(Date date, String airportName) {
+        return airportRepository.getTotalPeoples(date, airportName);
+    }
+
+    public int calculateFlightFare(Integer flightId) {
+        return airportRepository.calculateFlightFare(flightId);
     }
 }

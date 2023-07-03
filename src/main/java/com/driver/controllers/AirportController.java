@@ -50,7 +50,7 @@ public class AirportController {
         //Calculate the total number of people who have flights on that day on a particular airport
         //This includes both the people who have come for a flight and who have landed on an airport after their flight
 
-        return 0;
+        return airportService.getTotalNumberOfPeopleOnAirport(date, airportName);
     }
 
     @GetMapping("/calculate-fare")
@@ -61,7 +61,7 @@ public class AirportController {
         //Suppose if 2 people have booked the flight already : the price of flight for the third person will be 3000 + 2*50 = 3100
         //This will not include the current person who is trying to book, he might also be just checking price
 
-       return 0;
+       return airportService.calculateFlightFare(flightId);
 
     }
 

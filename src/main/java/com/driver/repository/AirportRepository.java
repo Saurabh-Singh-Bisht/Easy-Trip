@@ -7,9 +7,7 @@ import com.driver.model.Passenger;
 import io.swagger.models.auth.In;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Repository
 public class AirportRepository {
@@ -45,10 +43,12 @@ public class AirportRepository {
     public double getShortestTravelBetweenCities(City fromCity, City toCity) {
         double ans = Double.MAX_VALUE;
         for (Flight flight: flightMap.values()){
-            if (flight.getFromCity() == fromCity && flight.getToCity() == toCity){
+            if (flight.getFromCity().equals(fromCity) && flight.getToCity().equals(toCity)){
                 ans = Math.min(ans, flight.getDuration());
             }
         }
+        if(ans == Double.MAX_VALUE)
+            return -1;
         return ans;
     }
 
@@ -107,5 +107,28 @@ public class AirportRepository {
         int totalFare = variableFare + fixedFare;
 
         return totalFare;
+    }
+
+    public int getTotalPeoples(Date date, String airportName) {
+        List<Integer> flightIds = new ArrayList<>();
+        for (Flight flight: flightMap.values()){
+            if(flight.getFlightDate().equals(date) && (flight.getFromCity().equals(airportName)
+            || flight.getToCity().equals(airportName))){
+                flightIds.add(flight.getFlightId());
+            }
+        }
+        int count =0;
+        for (Integer flight: flightIds){
+            if(bookTicketMap.containsKey(flight)){
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public int calculateFlightFare(Integer flightId) {
+        int noOfPeopleAlreadyBooked = bookTicketMap.get(flightId).size();
+        int priceOfFlight = 3000 + noOfPeopleAlreadyBooked*50;
+        return priceOfFlight;
     }
 }
