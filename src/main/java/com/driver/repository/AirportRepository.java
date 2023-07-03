@@ -48,7 +48,7 @@ public class AirportRepository {
             }
         }
         if(ans == Double.MAX_VALUE)
-            return -1;
+            return -1.0;
         return ans;
     }
 
@@ -111,6 +111,8 @@ public class AirportRepository {
 
     public int getFair(Integer flightId) {
         int noOfPeopleBooked =bookTicketMap.get(flightId).size();
+        if(noOfPeopleBooked == 1)
+            return 3000;
         int variableFare = (noOfPeopleBooked*(noOfPeopleBooked+1))*25;
         int fixedFare = 3000*noOfPeopleBooked;
         int totalFare = variableFare + fixedFare;
