@@ -98,6 +98,8 @@ public class AirportRepository {
 
     public String getAirportName(Integer flightId) {
         Flight flight = flightMap.get(flightId);
+        if (Objects.isNull(flight))
+            return null;
         City takeOfStation = flight.getFromCity();
         for (Airport airport: airportMap.values()){
             if (airport.getCity().equals(takeOfStation)){
@@ -117,17 +119,16 @@ public class AirportRepository {
     }
 
     public int getTotalPeoples(Date date, String airportName) {
-        List<Integer> flightIds = new ArrayList<>();
-        for (Flight flight: flightMap.values()){
-            if(flight.getFlightDate().equals(date) && (flight.getFromCity().equals(airportName)
-            || flight.getToCity().equals(airportName))){
-                flightIds.add(flight.getFlightId());
-            }
-        }
         int count =0;
-        for (Integer flight: flightIds){
-            if(bookTicketMap.containsKey(flight)){
-                count++;
+        Airport airport = airportMap.get(airportName);
+        if(Objects.isNull(airport))
+            return 0;
+        City city = airport.getCity();
+        for (Flight flight: flightMap.values()){
+            if(flight.getFlightDate().equals(date)){
+                if (flight.getFromCity().equals(city) || flight.getToCity().equals(city)){
+                    count += bookTicketMap.get(flight.getFlightId()).size();
+                }
             }
         }
         return count;
