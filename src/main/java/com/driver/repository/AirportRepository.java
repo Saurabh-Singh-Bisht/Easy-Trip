@@ -53,23 +53,30 @@ public class AirportRepository {
     }
 
     public String bookTicket(Integer flightId, Integer passengerId) {
-        Flight flight = flightMap.get(flightId);
-        int passengersTillNow = bookTicketMap.get(flightId).size();
-        if(flight.getMaxCapacity() == passengersTillNow)
-            return "FAILURE";
-        if(bookTicketMap.get(flightId).contains(passengerId))
-            return "FAILURE";
-        List<Integer> passengerList = bookTicketMap.get(flightId);
-        passengerList.add(passengerId);
-        bookTicketMap.put(flightId, passengerList);
-        return "SUCCESS";
+        if(Objects.nonNull(bookTicketMap.get(flightId)) && bookTicketMap.get(flightId).size() <
+        flightMap.get(flightId).getMaxCapacity()){
+            List<Integer> passengers = bookTicketMap.get(flightId);
+            if(passengers.contains(passengerId))
+                return "FAILURE";
+            passengers.add(passengerId);
+            bookTicketMap.put(flightId, passengers);
+            return "SUCCESS";
+        }
+        if (Objects.isNull(bookTicketMap.get(flightId))){
+            bookTicketMap.put(flightId, new ArrayList<>());
+            List<Integer> passengers = bookTicketMap.get(flightId);
+            passengers.add(passengerId);
+            bookTicketMap.put(flightId, passengers);
+            return "SUCCESS";
+        }
+        return "FAILURE";
     }
 
     public String cancelTicket(Integer flightId, Integer passengerId) {
         if(flightMap.containsKey(flightId) == false)
             return "FAILURE";
         List<Integer> passangersList = bookTicketMap.get(flightId);
-        if(passangersList.contains(passengerId))
+        if(!passangersList.contains(passengerId))
             return "FAILURE";
         passangersList.remove(passengerId);
         bookTicketMap.put(flightId, passangersList);
@@ -128,7 +135,6 @@ public class AirportRepository {
 
     public int calculateFlightFare(Integer flightId) {
         int noOfPeopleAlreadyBooked = bookTicketMap.get(flightId).size();
-        int priceOfFlight = 3000 + noOfPeopleAlreadyBooked*50;
-        return priceOfFlight;
+        return noOfPeopleAlreadyBooked*50 + 3000;
     }
 }
